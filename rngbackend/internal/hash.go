@@ -2,6 +2,8 @@ package internal
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -18,7 +20,15 @@ type GetLatestBlockhashResponse struct {
 	}
 }
 
-func GetSalanaHash() string {
+func ExtraHash(data string) string {
+	h := sha256.New()
+	h.Write([]byte(data))
+	hashSum := h.Sum(nil)
+	hexHash := hex.EncodeToString(hashSum)
+	return hexHash
+}
+
+func GetSolanaHash() string {
 	var response GetLatestBlockhashResponse
 	data := map[string]interface{}{
 		"jsonrpc": "2.0",
@@ -58,6 +68,5 @@ func GetSalanaHash() string {
 	if err != nil {
 		log.Fatal("Error parsing JSON:", err)
 	}
-	return response.Result.Value.Blockhash
-
+	return ExtraHash(response.Result.Value.Blockhash)
 }
