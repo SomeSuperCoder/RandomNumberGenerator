@@ -12,8 +12,8 @@ type BlockHash struct {
 }
 
 type VerifycationData struct {
-	Hashes  []BlockHash `json:"hashes"`
-	XFactor int64       `json:"x_factor"`
+	Hashes  []string `json:"hashes"`
+	XFactor int64    `json:"x_factor"`
 }
 
 type Pipeline struct {
@@ -32,7 +32,7 @@ type FinalData struct {
 const k = 1000
 const step = 5
 
-func Process(hashes []string, binary bool) *Pipeline {
+func Process(hashes []string, binary bool) *FinalData {
 	var pipeline = &Pipeline{}
 	unixTime := time.Now().UnixNano()
 
@@ -42,7 +42,13 @@ func Process(hashes []string, binary bool) *Pipeline {
 	pipeline.Sum = Sum(pipeline.Convert)
 	pipeline.Result = Result(pipeline.Sum, binary)
 
-	return pipeline
+	return &FinalData{
+		Pipeline: *pipeline,
+		VerifycationData: VerifycationData{
+			Hashes:  hashes,
+			XFactor: unixTime,
+		},
+	}
 }
 
 func splitIntoChunks(s string, chunkSize int) []string {
