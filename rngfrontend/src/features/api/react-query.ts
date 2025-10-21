@@ -7,8 +7,11 @@ import {
   type QueryFunctionContext,
 } from "@tanstack/react-query";
 import { apiRequest } from "./request";
-import type { IApiError, IApiRequestConfig } from "../../shared/interfaces";
-import type { THttpMethod } from "../../shared/interfaces";
+import type {
+  IApiError,
+  IApiRequestConfig,
+} from "../../shared/interafaces/interfaces";
+import type { THttpMethod } from "../../shared/interafaces/interfaces";
 
 /** GET-хук c типами для ответа и параметров */
 export function useApiQuery<TData, TParams = undefined>(

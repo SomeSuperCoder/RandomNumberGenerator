@@ -1,6 +1,6 @@
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
 import { apiClient } from "./client";
-import type { IApiRequestConfig } from "../../shared/interfaces";
+import type { IApiRequestConfig } from "../../shared/interafaces/interfaces";
 
 function isFormData(value: unknown): value is FormData {
   return typeof FormData !== "undefined" && value instanceof FormData;
