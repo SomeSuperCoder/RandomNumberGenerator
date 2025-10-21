@@ -95,10 +95,5 @@ func Sum(sums []uint64) uint64 {
 }
 
 func Result(num uint64) float64 {
-	var extra float64 = 0
-	if rand.Intn(2) == 1 {
-		extra = 0.001
-	}
-
-	return float64(num%k)/k + extra
+	return float64(num%k+1) / k
 }
