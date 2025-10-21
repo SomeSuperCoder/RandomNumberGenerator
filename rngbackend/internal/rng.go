@@ -32,7 +32,7 @@ type FinalData struct {
 const k = 1000
 const step = 5
 
-func Process(hashes []string) *Pipeline {
+func Process(hashes []string, binary bool) *Pipeline {
 	var pipeline = &Pipeline{}
 	unixTime := time.Now().UnixNano()
 
@@ -40,7 +40,7 @@ func Process(hashes []string) *Pipeline {
 	pipeline.Pick = Pick(pipeline.Split, unixTime)
 	pipeline.Convert = Convert(pipeline.Pick)
 	pipeline.Sum = Sum(pipeline.Convert)
-	pipeline.Result = Result(pipeline.Sum)
+	pipeline.Result = Result(pipeline.Sum, binary)
 
 	return pipeline
 }
@@ -107,6 +107,10 @@ func Sum(sums []uint64) uint64 {
 	return result
 }
 
-func Result(num uint64) float64 {
+func Result(num uint64, binary bool) float64 {
+	if binary {
+		return float64(num % 2)
+	}
+
 	return float64(num%k+1) / k
 }
