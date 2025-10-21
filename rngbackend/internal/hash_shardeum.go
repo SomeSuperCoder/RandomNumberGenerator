@@ -9,25 +9,23 @@ import (
 	"net/http"
 )
 
-type GetLatestBlockhashResponse struct {
+type ResponseShardeum struct {
 	JSONRPC string
+	Id      int
 	Result  struct {
-		Value struct {
-			Blockhash string
-		}
+		Hash string
 	}
 }
 
-func GetSalanaHash() string {
-	var response GetLatestBlockhashResponse
+func GetShardeumHash() string {
+	var response ResponseShardeum
 	data := map[string]interface{}{
 		"jsonrpc": "2.0",
 		"id":      1,
-		"method":  "getLatestBlockhash",
+		"method":  "eth_getBlockByNumber",
 		"params": []interface{}{
-			map[string]interface{}{
-				"commitment": "processedzed",
-			},
+			"latest",
+			false,
 		},
 	}
 
@@ -38,7 +36,7 @@ func GetSalanaHash() string {
 	}
 
 	resp, err := http.Post(
-		"https://api.devnet.solana.com",
+		"https://api.shardeum.org/",
 		"application/json",
 		bytes.NewBuffer(jsonData),
 	)
@@ -53,11 +51,13 @@ func GetSalanaHash() string {
 		fmt.Println("Error reading response:", err)
 		return "3"
 	}
+
 	err = json.Unmarshal([]byte(string(body)), &response)
 
 	if err != nil {
 		log.Fatal("Error parsing JSON:", err)
 	}
-	return response.Result.Value.Blockhash
+	log.Printf("Shardeum hash")
+	return response.Result.Hash[2:]
 
 }
