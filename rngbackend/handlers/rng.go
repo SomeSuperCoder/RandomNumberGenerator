@@ -52,7 +52,7 @@ func GetRandomNumbers(w http.ResponseWriter, r *http.Request) {
 	hashesWG.Wait()
 
 	// // Form a response
-	var response = make([]*internal.Pipeline, amountParsed)
+	var response = make([]*internal.FinalData, amountParsed)
 	for i := range response {
 		value := internal.Process(hashes, binaryParsed)
 		response[i] = value
