@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -56,5 +57,6 @@ func GetInjectiveHash() string {
 		return "4"
 	}
 
+	log.Printf("Injective hash")
 	return response.Result.BlockID.Hash
 }

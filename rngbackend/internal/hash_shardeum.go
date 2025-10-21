@@ -57,6 +57,7 @@ func GetShardeumHash() string {
 	if err != nil {
 		log.Fatal("Error parsing JSON:", err)
 	}
+	log.Printf("Shardeum hash")
 	return response.Result.Hash[2:]
 
 }

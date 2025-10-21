@@ -6,10 +6,9 @@ import (
 
 	"github.com/SomeSuperCoder/RandomNumberGenerator/handlers"
 	"github.com/SomeSuperCoder/RandomNumberGenerator/middleware"
-	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-func loadRoutes(db *mongo.Database) http.Handler {
+func loadRoutes() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {

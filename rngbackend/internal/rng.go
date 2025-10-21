@@ -6,8 +6,17 @@ import (
 	"time"
 )
 
+type BlockHash struct {
+	SourceName string `json:"source_name"`
+	Hash       string `json:"hash"`
+}
+
+type VerifycationData struct {
+	Hashes  []BlockHash `json:"hashes"`
+	XFactor int64       `json:"x_factor"`
+}
+
 type Pipeline struct {
-	Hashes  []string   `json:"hashes"`
 	Split   [][]string `json:"split"`
 	Pick    []string   `json:"pick"`
 	Convert []uint64   `json:"convert"`
@@ -15,21 +24,25 @@ type Pipeline struct {
 	Result  float64    `json:"result"`
 }
 
+type FinalData struct {
+	VerifycationData
+	Pipeline
+}
+
 const k = 1000
 const step = 5
 
-func Process(hashes []string) float64 {
-	return Result(
-		Sum(
-			Convert(
-				Pick(
-					Split(
-						hashes,
-					),
-				),
-			),
-		),
-	)
+func Process(hashes []string) *Pipeline {
+	var pipeline = &Pipeline{}
+	unixTime := time.Now().UnixNano()
+
+	pipeline.Split = Split(hashes)
+	pipeline.Pick = Pick(pipeline.Split, unixTime)
+	pipeline.Convert = Convert(pipeline.Pick)
+	pipeline.Sum = Sum(pipeline.Convert)
+	pipeline.Result = Result(pipeline.Sum)
+
+	return pipeline
 }
 
 func splitIntoChunks(s string, chunkSize int) []string {
@@ -52,9 +65,9 @@ func Split(hashes []string) [][]string {
 	return result
 }
 
-func Pick(hashes [][]string) []string {
+func Pick(hashes [][]string, xFactor int64) []string {
 	var result = make([]string, len(hashes))
-	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+	rng := rand.New(rand.NewSource(xFactor))
 
 	for i, options := range hashes {
 		randomIndex := rng.Intn(len(options))

@@ -68,5 +68,6 @@ func GetSolanaHash() string {
 	if err != nil {
 		log.Fatal("Error parsing JSON:", err)
 	}
+	log.Printf("Solana hash")
 	return ExtraHash(response.Result.Value.Blockhash)
 }
