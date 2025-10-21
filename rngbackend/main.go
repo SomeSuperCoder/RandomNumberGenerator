@@ -1,18 +1,17 @@
 package main
 
 import (
-	"fmt"
+	"context"
+	"log"
 
-	"github.com/SomeSuperCoder/RandomNumberGenerator/internal"
+	"github.com/SomeSuperCoder/RandomNumberGenerator/application"
 )
 
 func main() {
-	var hashes []string
+	app := application.New()
 
-	// Populate the array with hashes
-	hashes = append(hashes, internal.GetSolanaHash())
-
-	result := internal.Process(hashes)
-
-	fmt.Println(result)
+	err := app.Start(context.Background())
+	if err != nil {
+		log.Fatalf("failed to start app: %v", err.Error())
+	}
 }
