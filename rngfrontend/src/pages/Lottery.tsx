@@ -1,9 +1,5 @@
-import React from 'react'
-
 const Lottery = () => {
-  return (
-    <div>Lottery</div>
-  )
-}
+  return <div>Lottery</div>;
+};
 
-export default Lottery
+export default Lottery;
