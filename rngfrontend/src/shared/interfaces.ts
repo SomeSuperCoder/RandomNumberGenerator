@@ -1,6 +1,6 @@
 export interface IFormulaInSteps {
   hashes: string[];
-  splitedHashes: [object[], object[], object[]];
+  splitedHashes: [string[], string[], string[]];
   selectedParts: [string, string, string];
   selectedPartsDec: [number, number, number];
   sum: number;
