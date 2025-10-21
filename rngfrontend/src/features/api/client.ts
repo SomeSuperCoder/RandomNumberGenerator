@@ -4,7 +4,10 @@ import axios, {
   type AxiosError,
 } from "axios";
 import qs from "qs";
-import type { IApiError, IErrorResponse } from "../../shared/interfaces";
+import type {
+  IApiError,
+  IErrorResponse,
+} from "../../shared/interafaces/interfaces";
 
 const createApiClient = (): AxiosInstance => {
   const config: AxiosRequestConfig = {

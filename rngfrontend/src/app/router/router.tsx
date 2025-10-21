@@ -1,12 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
 import GeneratePage from "../../pages/GeneratePage";
-import CheckerRandom from "../../pages/CheckerRandom";
-import Lottery from "../../pages/Lottery";
+import CheckerRandom from "../../pages/CheckerRandomPage";
+import Lottery from "../../pages/LotteryPage";
+import MainPage from "../../pages/MainPage";
+import BlockedRoute from "./BlockedRoute";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <GeneratePage />,
+    element: <MainPage />,
   },
   {
     path: "checker",
@@ -15,5 +17,13 @@ export const router = createBrowserRouter([
   {
     path: "lottery",
     element: <Lottery />,
+  },
+  {
+    path: "generate",
+    element: <GeneratePage />,
+  },
+  {
+    path: "*",
+    element: <BlockedRoute />,
   },
 ]);

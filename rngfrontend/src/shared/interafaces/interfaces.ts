@@ -24,7 +24,6 @@ export interface IApiError {
   details?: unknown;
 }
 
-
 export interface IErrorResponse {
   detail?: string;
   message?: string;
