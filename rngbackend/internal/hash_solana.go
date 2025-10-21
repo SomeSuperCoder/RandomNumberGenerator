@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-type GetLatestBlockhashResponse struct {
+type ResponseSolana struct {
 	JSONRPC string
 	Result  struct {
 		Value struct {
@@ -29,7 +29,7 @@ func ExtraHash(data string) string {
 }
 
 func GetSolanaHash() string {
-	var response GetLatestBlockhashResponse
+	var response ResponseSolana
 	data := map[string]interface{}{
 		"jsonrpc": "2.0",
 		"id":      1,
