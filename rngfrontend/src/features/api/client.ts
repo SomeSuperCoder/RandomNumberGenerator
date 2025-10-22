@@ -11,7 +11,7 @@ import type {
 
 const createApiClient = (): AxiosInstance => {
   const config: AxiosRequestConfig = {
-    baseURL: import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000/api",
+    baseURL: import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8090/",
     timeout: 15_000,
     headers: { "Content-Type": "application/json" },
     paramsSerializer: (params) =>

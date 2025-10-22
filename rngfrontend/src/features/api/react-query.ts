@@ -14,20 +14,20 @@ import type {
 import type { THttpMethod } from "../../shared/interafaces/interfaces";
 
 /** GET-хук c типами для ответа и параметров */
-export function useApiQuery<TData, TParams = undefined>(
+export function useApiQuery<TData, TParams = undefined, TRaw = TData>(
   key: QueryKey,
   config: Omit<IApiRequestConfig<never, TParams>, "method" | "data"> & {
     url: string;
   },
   options?: Omit<
-    UseQueryOptions<TData, IApiError, TData, QueryKey>,
+    UseQueryOptions<TRaw, IApiError, TData, QueryKey>,
     "queryKey" | "queryFn"
   >
 ) {
-  return useQuery<TData, IApiError, TData, QueryKey>({
+  return useQuery<TRaw, IApiError, TData, QueryKey>({
     queryKey: key,
     queryFn: ({ signal }: QueryFunctionContext<QueryKey>) =>
-      apiRequest<TData, never, TParams>({ ...config, method: "GET", signal }),
+      apiRequest<TRaw, never, TParams>({ ...config, method: "GET", signal }),
     ...options,
   });
 }

@@ -7,19 +7,13 @@
   height: 100vh;
   z-index: -1;
   pointer-events: none;
-
-  /* Базовый фон — почти чёрный */
   background-color: #0a0a0a;
 
-  /* Два радиальных градиента: слева и справа */
-  background-image: radial-gradient(
-      circle at 5% 50%,
-      #388e3c 0%,
-      transparent 40%
-    ),
-    radial-gradient(circle at 95% 50%, #388e3c 0%, transparent 40%);
+  /* Используем CSS-переменную */
+  background-image:
+    radial-gradient(circle at 5% 50%, var(--pulse-color, #388E3C) 0%, transparent 40%),
+    radial-gradient(circle at 95% 50%, var(--pulse-color, #388E3C) 0%, transparent 40%);
 
-  /* Анимация: двигаем градиенты ближе к центру и обратно */
   animation: pulse 6s ease-in-out infinite;
 }
 
