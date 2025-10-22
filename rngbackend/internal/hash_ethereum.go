@@ -9,23 +9,24 @@ import (
 	"net/http"
 )
 
-type ResponseInjective struct {
+type ResponseEthereum struct {
 	JSONRPC string `json:"jsonrpc"`
 	ID      int    `json:"id"`
 	Result  struct {
-		BlockID struct {
-			Hash string `json:"hash"`
-		} `json:"block_id"`
+		Hash string `json:"hash"`
 	} `json:"result"`
 }
 
-func GetInjectiveHash() (*BlockHash, error) {
-	var response ResponseInjective
+func GetEthereumHash() (*BlockHash, error) {
+	var response ResponseEthereum
 	data := map[string]interface{}{
 		"jsonrpc": "2.0",
 		"id":      1,
-		"method":  "block",
-		"params":  map[string]interface{}{},
+		"method":  "eth_getBlockByNumber",
+		"params": []interface{}{
+			"latest",
+			false,
+		},
 	}
 
 	jsonData, err := json.Marshal(data)
@@ -35,7 +36,7 @@ func GetInjectiveHash() (*BlockHash, error) {
 	}
 
 	resp, err := http.Post(
-		"https://tm.injective.network/",
+		"https://eth-mainnet.public.blastapi.io",
 		"application/json",
 		bytes.NewBuffer(jsonData),
 	)
@@ -60,10 +61,10 @@ func GetInjectiveHash() (*BlockHash, error) {
 
 	}
 
-	log.Printf("Injective hash")
+	log.Printf("Ethereum hash")
 	return &BlockHash{
-		SourceName:   "Injective",
-		OriginalHash: response.Result.BlockID.Hash,
-		ModifiedHash: response.Result.BlockID.Hash,
+		SourceName:   "Ethereum",
+		OriginalHash: response.Result.Hash,
+		ModifiedHash: response.Result.Hash[2:],
 	}, nil
 }

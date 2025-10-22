@@ -50,13 +50,13 @@ func GetRandomNumbers(w http.ResponseWriter, r *http.Request) {
 	var hashes = []internal.BlockHash{}
 	var hashesMutex sync.Mutex
 	var hashesWG sync.WaitGroup
-	hashesWG.Add(2)
+	hashesWG.Add(3)
 
 	// Do work
 	// // Load hashes
 	go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetSolanaHash)
 	go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetShardeumHash)
-	// go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetInjectiveHash)
+	go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetEthereumHash)
 
 	hashesWG.Wait()
 
