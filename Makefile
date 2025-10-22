@@ -1,5 +1,5 @@
 # короткий Makefile для backend+frontend
-DC ?= docker compose
+DC ?= docker-compose
 
 API_IMG = rngapi
 WEB_IMG = rngweb
