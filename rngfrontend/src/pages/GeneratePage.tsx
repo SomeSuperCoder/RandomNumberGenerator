@@ -26,60 +26,62 @@ const GeneratePage = () => {
     reset();
   };
   return (
-    <form onSubmit={handleSubmit(submit)} className="generate-form">
-      <div className="inputs">
-        <div className="field">
-          <input
-            type="number"
-            className="min"
-            placeholder="Минимум"
-            {...register("min", {
-              setValueAs: (v) => (v === "" ? undefined : Number(v)),
-            })}
-          />
-          <span className="error">{errors.min?.message}</span>
+    <div className="generate-dock">
+      <form onSubmit={handleSubmit(submit)} className="generate-form">
+        <div className="inputs">
+          <div className="field">
+            <input
+              type="number"
+              className="min"
+              placeholder="Минимум"
+              {...register("min", {
+                setValueAs: (v) => (v === "" ? undefined : Number(v)),
+              })}
+            />
+            <span className="error">{errors.min?.message}</span>
+          </div>
+
+          <div className="field">
+            <input
+              type="number"
+              className="count"
+              placeholder="Количество"
+              {...register("count", {
+                setValueAs: (v) => (v === "" ? undefined : Number(v)),
+              })}
+            />
+            <span className="error">{errors.count?.message}</span>
+          </div>
+
+          <div className="field">
+            <input
+              type="number"
+              className="max"
+              placeholder="Максимум"
+              {...register("max", {
+                setValueAs: (v) => (v === "" ? undefined : Number(v)),
+              })}
+            />
+            <span className="error">{errors.max?.message}</span>
+          </div>
         </div>
 
-        <div className="field">
-          <input
-            type="number"
-            className="count"
-            placeholder="Количество"
-            {...register("count", {
-              setValueAs: (v) => (v === "" ? undefined : Number(v)),
-            })}
-          />
-          <span className="error">{errors.count?.message}</span>
+        <div className="actions">
+          <button className="generate-button">Генерировать</button>
+
+          <label htmlFor="checkbox" className="checkbox-wrap">
+            <input
+              id="checkbox"
+              type="checkbox"
+              className="checkbox"
+              {...register("checkbox")}
+            />
+            <span>Визуализация</span>
+          </label>
+          <span className="error">{errors.checkbox?.message}</span>
         </div>
-
-        <div className="field">
-          <input
-            type="number"
-            className="max"
-            placeholder="Максимум"
-            {...register("max", {
-              setValueAs: (v) => (v === "" ? undefined : Number(v)),
-            })}
-          />
-          <span className="error">{errors.max?.message}</span>
-        </div>
-      </div>
-
-      <div className="actions">
-        <button className="generate-button">Генерировать</button>
-
-        <label htmlFor="checkbox" className="checkbox-wrap">
-          <input
-            id="checkbox"
-            type="checkbox"
-            className="checkbox"
-            {...register("checkbox")}
-          />
-          <span>Визуализация</span>
-        </label>
-        <span className="error">{errors.checkbox?.message}</span>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 };
 

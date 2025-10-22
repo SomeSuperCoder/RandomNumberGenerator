@@ -37,8 +37,8 @@ export default function Header() {
           <button
             type="button"
             aria-label="Тема"
-            onClick={() => document.documentElement.classList.toggle("dark")}
-            className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 bg-white/[.04] transition-colors hover:bg-white/10"
+            onClick={() => document.documentElement.classList.toggle("light")}
+            className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 bg-white/[.04] transition-colors hover:bg-white/10 cursor-pointer"
           >
             <SunMedium className="h-4 w-4 opacity-70" />
           </button>
