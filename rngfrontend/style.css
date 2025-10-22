@@ -1,9 +1,1 @@
 @import "tailwindcss";
-@custom-variant dark (&:where(.dark, .dark *));
-
-@layer base {
-  html, body, #root { @apply h-full; }
-
-  /* дефолт — светлая палитра, при .dark — тёмная */
-  body { @apply m-0 bg-zinc-50 text-zinc-900 dark:bg-black dark:text-zinc-100; }
-}
