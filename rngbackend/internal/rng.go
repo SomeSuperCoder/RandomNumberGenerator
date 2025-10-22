@@ -159,5 +159,5 @@ func Result(num uint64, binary bool) float64 {
 		return float64(num % 2)
 	}
 
-	return float64(num%k+1) / k
+	return float64(num%(k+1)) / k
 }
