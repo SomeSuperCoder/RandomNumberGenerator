@@ -31,7 +31,7 @@ const GeneratePage = () => {
     mode: "onSubmit",
   });
 
-  const { data, isLoading, error } = useApiQuery<
+  const { data, isLoading, error, isSuccess } = useApiQuery<
     FinalDataWithResults,
     TRngParams,
     RngRaw
@@ -39,12 +39,15 @@ const GeneratePage = () => {
     ["generate"],
     {
       url: "/rng",
-      params: { full_random: false, binary: false, amount: 100000 },
+      params: { full_random: false, binary: false, amount: 1000 },
     },
     {
       select: normalize,
     }
   );
+  if (isSuccess) {
+    console.log(data);
+  }
 
   const submit = (formData: IGenerateSchema) => {
     console.log(formData);
@@ -53,7 +56,6 @@ const GeneratePage = () => {
 
   return (
     <div className="fixed left-1/2 bottom-[max(16px,env(safe-area-inset-bottom))] z-50 w-[min(760px,calc(100vw-24px))] -translate-x-1/2 ">
-      {/* Результаты */}
       <div className="mb-4 text-white">
         {isLoading ? (
           "Загрузка…"
@@ -62,9 +64,6 @@ const GeneratePage = () => {
         ) : data ? (
           <>
             <div className="mb-1">total results: {data.results.length}</div>
-            <div className="mb-2">
-              sample result (первый): {data.results[0] ?? "—"}
-            </div>
 
             <EditableNumbersTextarea
               items={data.results}

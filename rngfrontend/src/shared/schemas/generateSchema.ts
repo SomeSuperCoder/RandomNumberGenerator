@@ -1,7 +1,9 @@
 // shared/schemas/generateSchema.ts
 import { z } from "zod";
 
-// Универсальный числовой field: '' | NaN -> undefined -> "Введите ..."
+const COUNT_MAX = 1000;
+
+// Универсальный числовой field: '' | null | undefined | NaN -> undefined -> "Введите ..."
 const numberField = (label: string) =>
   z.preprocess((v) => {
     if (v === "" || v == null) return undefined; // пустая строка / null / undefined
@@ -13,11 +15,25 @@ export const generateSchema = z
   .object({
     min: numberField("минимум"),
     max: numberField("максимум"),
-    count: numberField("количество"),
+
+    // ВАЖНО: numberField -> pipe к "целому числу" + диапазон
+    count: numberField("количество").pipe(
+      z
+        .number()
+        .int({ message: "Должно быть целым числом" })
+        .min(1, { message: "Минимум 1" })
+        .max(COUNT_MAX, { message: `Максимум ${COUNT_MAX}` })
+    ),
+
     checkbox: z.boolean().optional().default(false),
   })
   .superRefine((v, ctx) => {
-    if (v.min !== undefined && v.max !== undefined && v.min > v.max) {
+    // Безопасная проверка: оба — числа
+    if (
+      typeof v.min === "number" &&
+      typeof v.max === "number" &&
+      v.min > v.max
+    ) {
       ctx.addIssue({
         path: ["max"],
         code: "custom",
