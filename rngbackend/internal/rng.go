@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"math"
 	"math/rand"
 	"strconv"
 	"time"
@@ -144,7 +145,7 @@ func Sum(sums []uint64) uint64 {
 		}
 	}
 
-	return result
+	return uint64(math.Abs(float64(result)))
 }
 
 func Result(num uint64, binary bool) float64 {
