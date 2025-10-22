@@ -1,4 +1,4 @@
-DC ?= docker-compose
+DC ?= docker compose
 
 .PHONY: build up down logs clean
 
