@@ -7,13 +7,24 @@ import (
 )
 
 type BlockHash struct {
-	SourceName string `json:"source_name"`
-	Hash       string `json:"hash"`
+	SourceName   string `json:"source_name"`
+	OriginalHash string `json:"original_hash"`
+	ModifiedHash string `json:"modified_hash"`
+}
+
+func AsStringArray(blockHashes []BlockHash) []string {
+	var result []string
+
+	for _, blockHash := range blockHashes {
+		result = append(result, blockHash.ModifiedHash)
+	}
+
+	return result
 }
 
 type VerifycationData struct {
-	Hashes  []string `json:"hashes"`
-	XFactor int64    `json:"x_factor"`
+	Hashes  []BlockHash `json:"hashes"`
+	XFactor int64       `json:"x_factor"`
 }
 
 type Pipeline struct {
@@ -32,12 +43,36 @@ type FinalData struct {
 const k = 1000
 const step = 5
 
-func Process(hashes []string, binary bool) *FinalData {
+func NewRng() (*rand.Rand, int64) {
+	now := time.Now().UnixNano()
+	return rand.New(rand.NewSource(now)), now
+}
+
+// This is a wrapper function
+// Generate random numbers squence based upon a single timestamp
+func ProcessSeq(hashesFull []BlockHash, amount int, binary bool, fullRandom bool) []*FinalData {
+	var response = make([]*FinalData, amount)
+
+	rng, unixTime := NewRng()
+	for i := range response {
+		if fullRandom {
+			rng, unixTime = NewRng()
+		}
+		value := Process(hashesFull, binary, unixTime, rng)
+		response[i] = value
+	}
+
+	return response
+}
+
+// Generate a single random number
+func Process(hashesFull []BlockHash, binary bool, unixTime int64, rng *rand.Rand) *FinalData {
 	var pipeline = &Pipeline{}
-	unixTime := time.Now().UnixNano()
+
+	hashes := AsStringArray(hashesFull)
 
 	pipeline.Split = Split(hashes)
-	pipeline.Pick = Pick(pipeline.Split, unixTime)
+	pipeline.Pick = Pick(pipeline.Split, rng)
 	pipeline.Convert = Convert(pipeline.Pick)
 	pipeline.Sum = Sum(pipeline.Convert)
 	pipeline.Result = Result(pipeline.Sum, binary)
@@ -45,7 +80,7 @@ func Process(hashes []string, binary bool) *FinalData {
 	return &FinalData{
 		Pipeline: *pipeline,
 		VerifycationData: VerifycationData{
-			Hashes:  hashes,
+			Hashes:  hashesFull,
 			XFactor: unixTime,
 		},
 	}
@@ -71,9 +106,8 @@ func Split(hashes []string) [][]string {
 	return result
 }
 
-func Pick(hashes [][]string, xFactor int64) []string {
+func Pick(hashes [][]string, rng *rand.Rand) []string {
 	var result = make([]string, len(hashes))
-	rng := rand.New(rand.NewSource(xFactor))
 
 	for i, options := range hashes {
 		randomIndex := rng.Intn(len(options))

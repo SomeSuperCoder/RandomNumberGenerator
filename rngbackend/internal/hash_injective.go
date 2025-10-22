@@ -19,7 +19,7 @@ type ResponseInjective struct {
 	} `json:"result"`
 }
 
-func GetInjectiveHash() string {
+func GetInjectiveHash() (*BlockHash, error) {
 	var response ResponseInjective
 	data := map[string]interface{}{
 		"jsonrpc": "2.0",
@@ -31,7 +31,7 @@ func GetInjectiveHash() string {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		fmt.Println("Error marshaling JSON:", err)
-		return "1"
+		return nil, err
 	}
 
 	resp, err := http.Post(
@@ -41,22 +41,29 @@ func GetInjectiveHash() string {
 	)
 	if err != nil {
 		fmt.Println("Error making request:", err)
-		return "2"
+		return nil, err
+
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading response:", err)
-		return "3"
+		return nil, err
+
 	}
 
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		fmt.Println("Error parsing JSON:", err)
-		return "4"
+		return nil, err
+
 	}
 
 	log.Printf("Injective hash")
-	return response.Result.BlockID.Hash
+	return &BlockHash{
+		SourceName:   "Injective",
+		OriginalHash: response.Result.BlockID.Hash,
+		ModifiedHash: response.Result.BlockID.Hash,
+	}, nil
 }

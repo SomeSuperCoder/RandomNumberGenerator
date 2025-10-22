@@ -12,18 +12,22 @@ import (
 	"github.com/SomeSuperCoder/RandomNumberGenerator/utils"
 )
 
-func RunAsync[T any](values *[]T, mutex *sync.Mutex, wg *sync.WaitGroup, f func() T) {
+func RunAsync(values *[]internal.BlockHash, mutex *sync.Mutex, wg *sync.WaitGroup, f func() (*internal.BlockHash, error)) {
 	defer wg.Done()
-	res := f()
+	res, err := f()
+	if err != nil {
+		return
+	}
 	mutex.Lock()
 	defer mutex.Unlock()
-	*values = append(*values, res)
+	*values = append(*values, *res)
 }
 
 func GetRandomNumbers(w http.ResponseWriter, r *http.Request) {
 	// Parse
 	amount := r.URL.Query().Get("amount")
 	binary := r.URL.Query().Get("binary")
+	fullRandom := r.URL.Query().Get("full_random")
 
 	if amount == "" {
 		amount = "1"
@@ -38,7 +42,12 @@ func GetRandomNumbers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var hashes = []string{}
+	fullRandomParsed, err := strconv.ParseBool(fullRandom)
+	if utils.CheckError(w, err, "Please provide a valid full_random param", http.StatusBadRequest) {
+		return
+	}
+
+	var hashes = []internal.BlockHash{}
 	var hashesMutex sync.Mutex
 	var hashesWG sync.WaitGroup
 	hashesWG.Add(2)
@@ -52,11 +61,7 @@ func GetRandomNumbers(w http.ResponseWriter, r *http.Request) {
 	hashesWG.Wait()
 
 	// // Form a response
-	var response = make([]*internal.FinalData, amountParsed)
-	for i := range response {
-		value := internal.Process(hashes, binaryParsed)
-		response[i] = value
-	}
+	response := internal.ProcessSeq(hashes, amountParsed, binaryParsed, fullRandomParsed)
 
 	// Respond
 	if binaryParsed {
