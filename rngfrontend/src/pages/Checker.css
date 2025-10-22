@@ -115,3 +115,25 @@
     justify-content: flex-start;
   }
 }
+
+
+.checker-dock {
+  position: fixed;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom)); /* учёт вырезов на мобилках */
+  transform: translateX(-50%);
+  width: min(760px, calc(100vw - 24px)); /* адаптивная ширина */
+  z-index: 50;
+
+  /* чтобы «док» не блокировал клики по странице вокруг формы */
+  pointer-events: none;
+}
+.checker-dock .checker-form {
+  pointer-events: auto; /* кликабельна только сама форма */
+}
+
+/* если форма прилипает к низу и перекрывает контент при скролле,
+   добавь отступ снизу странице/контенту */
+.page-has-dock {
+  padding-bottom: 140px; /* подгони при желании */
+}

@@ -24,30 +24,32 @@ const CheckerRandomPage = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="checker-form">
-      <div className="field">
-        <textarea
-          className="checker-textarea"
-          placeholder="Впиши число для проверки"
-          {...register("count", { valueAsNumber: true })}
-        />
-        <span className="error">{errors.count?.message}</span>
-      </div>
-
-      <div className="actions">
-        <button className="generate-button">Проверить</button>
-
-        <label htmlFor="checkbox" className="checkbox-wrap">
-          <input
-            id="checkbox"
-            type="checkbox"
-            className="checkbox"
-            {...register("checkbox")}
+    <div className="checker-dock">
+      <form onSubmit={handleSubmit(submit)} className="checker-form">
+        <div className="field">
+          <textarea
+            className="checker-textarea"
+            placeholder="Впиши число для проверки"
+            {...register("count", { valueAsNumber: true })}
           />
-          <span>Визуализация</span>
-        </label>
-      </div>
-    </form>
+          <span className="error">{errors.count?.message}</span>
+        </div>
+
+        <div className="actions">
+          <button className="generate-button">Проверить</button>
+
+          <label htmlFor="checkbox" className="checkbox-wrap">
+            <input
+              id="checkbox"
+              type="checkbox"
+              className="checkbox"
+              {...register("checkbox")}
+            />
+            <span>Визуализация</span>
+          </label>
+        </div>
+      </form>
+    </div>
   );
 };
 

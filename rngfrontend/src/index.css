@@ -1,0 +1,35 @@
+@layer utilities {
+  /* дышим и по ширине, и по высоте */
+  @keyframes breathe-x {
+    0%, 100% {
+      --rx: 42%; /* горизонтальный радиус */
+      --ry: 60%; /* вертикальный радиус (стал больше) */
+      --a: .28;  /* яркость свечения */
+    }
+    50% {
+      --rx: 70%;
+      --ry: 75%;
+      --a: .18;
+    }
+  }
+
+  .bg-breathe {
+    --rx: 42%;
+    --ry: 60%;
+    --a: .28;
+
+    animation: breathe-x 7s ease-in-out infinite;
+
+    /* два зелёных боковых + мягкая тёмная вуаль по центру */
+    background:
+      radial-gradient(var(--rx) var(--ry) at 0% 50%,  rgba(122,255,70,var(--a)), transparent 70%),
+      radial-gradient(var(--rx) var(--ry) at 100% 50%, rgba(122,255,70,var(--a)), transparent 70%),
+      radial-gradient(95% 95% at 50% 50%, rgba(10,14,18,.97), rgba(10,14,18,1) 60%);
+    background-blend-mode: screen, screen, normal;
+    background-color: #0b0f14; /* базовый тон подложки */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bg-breathe { animation: none; }
+  }
+}
