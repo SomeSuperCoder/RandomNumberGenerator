@@ -65,6 +65,6 @@ func GetEthereumHash() (*BlockHash, error) {
 	return &BlockHash{
 		SourceName:   "Ethereum",
 		OriginalHash: response.Result.Hash,
-		ModifiedHash: response.Result.Hash,
+		ModifiedHash: response.Result.Hash[2:],
 	}, nil
 }
