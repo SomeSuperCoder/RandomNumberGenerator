@@ -7,13 +7,24 @@ import (
 )
 
 type BlockHash struct {
-	SourceName string `json:"source_name"`
-	Hash       string `json:"hash"`
+	SourceName   string `json:"source_name"`
+	OriginalHash string `json:"original_hash"`
+	ModifiedHash string `json:"modified_hash"`
+}
+
+func AsStringArray(blockHashes []BlockHash) []string {
+	var result []string
+
+	for _, blockHash := range blockHashes {
+		result = append(result, blockHash.ModifiedHash)
+	}
+
+	return result
 }
 
 type VerifycationData struct {
-	Hashes  []string `json:"hashes"`
-	XFactor int64    `json:"x_factor"`
+	Hashes  []BlockHash `json:"hashes"`
+	XFactor int64       `json:"x_factor"`
 }
 
 type Pipeline struct {
@@ -32,9 +43,11 @@ type FinalData struct {
 const k = 1000
 const step = 5
 
-func Process(hashes []string, binary bool) *FinalData {
+func Process(hashesFull []BlockHash, binary bool) *FinalData {
 	var pipeline = &Pipeline{}
 	unixTime := time.Now().UnixNano()
+
+	hashes := AsStringArray(hashesFull)
 
 	pipeline.Split = Split(hashes)
 	pipeline.Pick = Pick(pipeline.Split, unixTime)
@@ -45,7 +58,7 @@ func Process(hashes []string, binary bool) *FinalData {
 	return &FinalData{
 		Pipeline: *pipeline,
 		VerifycationData: VerifycationData{
-			Hashes:  hashes,
+			Hashes:  hashesFull,
 			XFactor: unixTime,
 		},
 	}

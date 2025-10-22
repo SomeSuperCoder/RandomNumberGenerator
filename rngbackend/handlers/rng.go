@@ -12,12 +12,15 @@ import (
 	"github.com/SomeSuperCoder/RandomNumberGenerator/utils"
 )
 
-func RunAsync[T any](values *[]T, mutex *sync.Mutex, wg *sync.WaitGroup, f func() T) {
+func RunAsync(values *[]internal.BlockHash, mutex *sync.Mutex, wg *sync.WaitGroup, f func() (*internal.BlockHash, error)) {
 	defer wg.Done()
-	res := f()
+	res, err := f()
+	if err != nil {
+		return
+	}
 	mutex.Lock()
 	defer mutex.Unlock()
-	*values = append(*values, res)
+	*values = append(*values, *res)
 }
 
 func GetRandomNumbers(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +41,7 @@ func GetRandomNumbers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var hashes = []string{}
+	var hashes = []internal.BlockHash{}
 	var hashesMutex sync.Mutex
 	var hashesWG sync.WaitGroup
 	hashesWG.Add(2)
@@ -47,7 +50,7 @@ func GetRandomNumbers(w http.ResponseWriter, r *http.Request) {
 	// // Load hashes
 	go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetSolanaHash)
 	go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetShardeumHash)
-	go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetInjectiveHash)
+	// go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetInjectiveHash)
 
 	hashesWG.Wait()
 

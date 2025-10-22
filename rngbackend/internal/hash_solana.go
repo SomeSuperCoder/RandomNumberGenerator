@@ -28,7 +28,7 @@ func ExtraHash(data string) string {
 	return hexHash
 }
 
-func GetSolanaHash() string {
+func GetSolanaHash() (*BlockHash, error) {
 	var response ResponseSolana
 	data := map[string]interface{}{
 		"jsonrpc": "2.0",
@@ -44,7 +44,7 @@ func GetSolanaHash() string {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		fmt.Println("Error marshaling JSON:", err)
-		return "1"
+		return nil, err
 	}
 
 	resp, err := http.Post(
@@ -54,14 +54,16 @@ func GetSolanaHash() string {
 	)
 	if err != nil {
 		fmt.Println("Error making request:", err)
-		return "2"
+		return nil, err
+
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading response:", err)
-		return "3"
+		return nil, err
+
 	}
 	err = json.Unmarshal([]byte(string(body)), &response)
 
@@ -69,5 +71,9 @@ func GetSolanaHash() string {
 		log.Fatal("Error parsing JSON:", err)
 	}
 	log.Printf("Solana hash")
-	return ExtraHash(response.Result.Value.Blockhash)
+	return &BlockHash{
+		SourceName:   "Shardeum",
+		OriginalHash: response.Result.Value.Blockhash,
+		ModifiedHash: ExtraHash(response.Result.Value.Blockhash),
+	}, nil
 }
