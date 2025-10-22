@@ -16,5 +16,5 @@ func loadRoutes() http.Handler {
 	})
 	mux.HandleFunc("/rng", handlers.GetRandomNumbers)
 
-	return middleware.LoggerMiddleware(mux)
+	return middleware.LoggerMiddleware(middleware.CORSMiddleware(mux))
 }
