@@ -1,7 +1,10 @@
-version: "3.9"
+version: "3.8"
 
 services:
   api:
+    build:
+      context: ./rngbackend
+      dockerfile: ./services/api/Dockerfile
     image: rngapi
     restart: always
     healthcheck:
@@ -9,30 +12,26 @@ services:
       interval: 30s
       retries: 3
       timeout: 10s
-    networks:
-      - app-network
     ports:
       - "8090:8090"
+    networks: [app-network]
 
   web:
-    # Собираем из Dockerfile фронта
     build:
       context: ./rngfrontend
       dockerfile: ./Dockerfile
     image: rngweb
     restart: always
     depends_on:
-      api:
-        condition: service_healthy
+      - api
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/"]
       interval: 30s
       retries: 3
       timeout: 5s
-    networks:
-      - app-network
     ports:
       - "8080:80"
+    networks: [app-network]
 
 networks:
   app-network:
