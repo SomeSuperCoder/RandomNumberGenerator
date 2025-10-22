@@ -1,11 +1,6 @@
-import Header from "@/shared/components/header/header";
-import './main.css'
+import "./main.css";
 const MainPage = () => {
-  return (
-    <div className="main">
-      <Header />
-    </div>
-  );
+  return <div className="main"></div>;
 };
 
 export default MainPage;
