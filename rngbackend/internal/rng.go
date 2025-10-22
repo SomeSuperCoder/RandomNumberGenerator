@@ -43,29 +43,36 @@ type FinalData struct {
 const k = 1000
 const step = 5
 
+func NewRng() (*rand.Rand, int64) {
+	now := time.Now().UnixNano()
+	return rand.New(rand.NewSource(now)), now
+}
+
+// This is a wrapper function
 // Generate random numbers squence based upon a single timestamp
 func ProcessSeq(hashesFull []BlockHash, amount int, binary bool, fullRandom bool) []*FinalData {
 	var response = make([]*FinalData, amount)
 
-	unixTime := time.Now().UnixNano()
+	rng, unixTime := NewRng()
 	for i := range response {
 		if fullRandom {
-			unixTime = time.Now().UnixNano()
+			rng, unixTime = NewRng()
 		}
-		value := Process(hashesFull, binary, unixTime)
+		value := Process(hashesFull, binary, unixTime, rng)
 		response[i] = value
 	}
 
 	return response
 }
 
-func Process(hashesFull []BlockHash, binary bool, unixTime int64) *FinalData {
+// Generate a single random number
+func Process(hashesFull []BlockHash, binary bool, unixTime int64, rng *rand.Rand) *FinalData {
 	var pipeline = &Pipeline{}
 
 	hashes := AsStringArray(hashesFull)
 
 	pipeline.Split = Split(hashes)
-	pipeline.Pick = Pick(pipeline.Split, unixTime)
+	pipeline.Pick = Pick(pipeline.Split, rng)
 	pipeline.Convert = Convert(pipeline.Pick)
 	pipeline.Sum = Sum(pipeline.Convert)
 	pipeline.Result = Result(pipeline.Sum, binary)
@@ -99,9 +106,8 @@ func Split(hashes []string) [][]string {
 	return result
 }
 
-func Pick(hashes [][]string, xFactor int64) []string {
+func Pick(hashes [][]string, rng *rand.Rand) []string {
 	var result = make([]string, len(hashes))
-	rng := rand.New(rand.NewSource(xFactor))
 
 	for i, options := range hashes {
 		randomIndex := rng.Intn(len(options))
