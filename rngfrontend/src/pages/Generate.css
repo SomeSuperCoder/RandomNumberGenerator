@@ -15,6 +15,7 @@
   padding: 11px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
   max-width: 720px;
+  pointer-events: none;
 }
 
 /* Ряд инпутов: 3 колонки + компактные подписи ошибок под каждым */
@@ -186,7 +187,6 @@ input::placeholder {
   z-index: 50;
 
   /* чтобы «док» не блокировал клики по странице вокруг формы */
-  pointer-events: none;
 }
 .generate-dock .generate-form {
   pointer-events: auto; /* кликабельна только сама форма */

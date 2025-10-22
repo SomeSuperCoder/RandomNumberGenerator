@@ -5,6 +5,14 @@ import {
   type IGenerateSchema,
 } from "@/shared/schemas/generateSchema";
 import "./Generate.css";
+import { useApiQuery } from "@/features/api/react-query";
+import {
+  type TRngParams,
+  type RngRaw,
+  normalize,
+  type FinalDataWithResults,
+} from "@/shared/interafaces/interfaces";
+import { EditableNumbersTextarea } from "@/widgets/components/VirtualNumberList";
 const GeneratePage = () => {
   const {
     register,
@@ -21,12 +29,51 @@ const GeneratePage = () => {
     resolver: zodResolver(generateSchema),
     mode: "onSubmit",
   });
+  const { data, isLoading, error } = useApiQuery<
+    FinalDataWithResults,
+    TRngParams,
+    RngRaw
+  >(
+    ["generate"],
+    {
+      url: "/rng",
+      params: { full_random: false, binary: false, amount: 100000 },
+    },
+    {
+      select: normalize,
+    }
+  );
+  console.log(data);
+  if (error) console.error("API error:", error);
+  console.log({ data, isLoading, error });
+
   const submit = (data: IGenerateSchema) => {
     console.log(data);
     reset();
   };
   return (
     <div className="generate-dock">
+      <div className="mb-4 text-white">
+        {isLoading
+          ? "Загрузка…"
+          : error
+          ? `Ошибка: ${error.message}`
+          : data && (
+              <>
+                <div className="mb-1">total results: {data.results.length}</div>
+                <div className="mb-2">
+                  sample result (первый): {data.results[0] ?? "—"}
+                </div>
+
+                <EditableNumbersTextarea
+                  items={data.results}
+                  onChange={() => {}}
+                  height={320}
+                  displaySeparator="newline"
+                />
+              </>
+            )}
+      </div>
       <form onSubmit={handleSubmit(submit)} className="generate-form">
         <div className="inputs">
           <div className="field">
