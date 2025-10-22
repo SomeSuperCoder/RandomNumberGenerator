@@ -1,0 +1,16 @@
+services:
+  api:
+    image: rngapi 
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:8090/health"]
+      interval: 30s
+      retries: 3
+      timeout: 10s
+    networks:
+      - app-network
+    ports:
+      - "8090:8090"
+networks:
+  app-network:
+    driver: bridge
