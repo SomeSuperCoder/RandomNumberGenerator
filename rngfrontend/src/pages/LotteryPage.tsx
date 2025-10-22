@@ -1,5 +1,5 @@
-const Lottery = () => {
+const LotteryPage = () => {
   return <div>Lottery</div>;
 };
 
-export default Lottery;
+export default LotteryPage;
