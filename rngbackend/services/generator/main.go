@@ -32,10 +32,18 @@ func main() {
 		log.Printf("Finished request №%v\n", i)
 	}
 
-	err := os.WriteFile("output.bin", []byte(builder.String()), 0644)
+	result := builder.String()
+	err := os.WriteFile("output.bin", []byte(result), 0644)
 	if err != nil {
 		log.Fatalf("Error writing to file: %v", err)
 	}
 
-	log.Printf("Successfully wrote the file")
+	log.Println("Successfully wrote the file")
+
+	log.Println("Counting occurences...")
+	count0 := strings.Count(result, "0")
+	count1 := strings.Count(result, "1")
+
+	log.Println("0: ", count0)
+	log.Println("1: ", count1)
 }
