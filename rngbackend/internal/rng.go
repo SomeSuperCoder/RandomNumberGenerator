@@ -87,6 +87,7 @@ func Process(hashesFull []BlockHash, binary bool, unixTime int64, rng *rand.Rand
 	}
 }
 
+// Splits a string into fixed chuncks
 func splitIntoChunks(s string, chunkSize int) []string {
 	var chunks []string
 	for i := 0; i < len(s); i += chunkSize {
@@ -96,6 +97,7 @@ func splitIntoChunks(s string, chunkSize int) []string {
 	return chunks
 }
 
+// Splits the given hashes into pieces
 func Split(hashes []string) [][]string {
 	var result [][]string
 
@@ -107,6 +109,7 @@ func Split(hashes []string) [][]string {
 	return result
 }
 
+// Picks random hash parts based upon the time
 func Pick(hashes [][]string, rng *rand.Rand) []string {
 	var result = make([]string, len(hashes))
 
@@ -119,6 +122,7 @@ func Pick(hashes [][]string, rng *rand.Rand) []string {
 	return result
 }
 
+// Converts hex to decimal
 func Convert(parts []string) []uint64 {
 	var result = make([]uint64, len(parts))
 
@@ -134,6 +138,7 @@ func Convert(parts []string) []uint64 {
 	return result
 }
 
+// Does +- operation on the given decimal numbers
 func Sum(sums []uint64) uint64 {
 	var result uint64
 
@@ -148,6 +153,7 @@ func Sum(sums []uint64) uint64 {
 	return uint64(math.Abs(float64(result)))
 }
 
+// Converts a big number to a range between 0 and 1 or to a binary number
 func Result(num uint64, binary bool) float64 {
 	if binary {
 		return float64(num % 2)
