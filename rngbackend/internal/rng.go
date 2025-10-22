@@ -43,9 +43,24 @@ type FinalData struct {
 const k = 1000
 const step = 5
 
-func Process(hashesFull []BlockHash, binary bool) *FinalData {
-	var pipeline = &Pipeline{}
+// Generate random numbers squence based upon a single timestamp
+func ProcessSeq(hashesFull []BlockHash, amount int, binary bool, fullRandom bool) []*FinalData {
+	var response = make([]*FinalData, amount)
+
 	unixTime := time.Now().UnixNano()
+	for i := range response {
+		if fullRandom {
+			unixTime = time.Now().UnixNano()
+		}
+		value := Process(hashesFull, binary, unixTime)
+		response[i] = value
+	}
+
+	return response
+}
+
+func Process(hashesFull []BlockHash, binary bool, unixTime int64) *FinalData {
+	var pipeline = &Pipeline{}
 
 	hashes := AsStringArray(hashesFull)
 
