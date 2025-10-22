@@ -73,25 +73,26 @@ export function normalize(raw: RngRaw): FinalDataWithResults {
   const numbers = raw.filter((v): v is number => typeof v === "number");
   const metas = raw.filter(isMeta) as Partial<IFinalData>[];
 
-  // первый объект-мета для базовых полей
   const meta0 = metas[0] ?? {};
 
+  // добавляем недостающие поля IPipeline:
+  const split = meta0.split ?? []; // <— было отсутствовало
+  const pick = meta0.pick ?? []; // <— было отсутствовало
   const convert = meta0.convert ?? numbers;
   const sum = meta0.sum ?? numbers.reduce((a, b) => a + b, 0);
   const result = meta0.result ?? (convert.length ? sum / convert.length : 0);
   const hashes = meta0.hashes ?? [];
 
-  // x_factor -> bigint
   const xRaw = (meta0.x_factor as any) ?? 0;
   const x_factor =
     typeof xRaw === "bigint"
       ? xRaw
       : BigInt(typeof xRaw === "string" ? xRaw : String(xRaw));
 
-  // все results из всех meta-объектов (фильтруем числа/undefined)
   const results = metas
     .map((m) => m.result)
     .filter((v): v is number => typeof v === "number");
 
-  return { convert, sum, result, hashes, x_factor, results };
+  // важно вернуть split и pick
+  return { split, pick, convert, sum, result, hashes, x_factor, results };
 }
