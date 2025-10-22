@@ -47,7 +47,7 @@ func GetRandomNumbers(w http.ResponseWriter, r *http.Request) {
 	// // Load hashes
 	go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetSolanaHash)
 	go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetShardeumHash)
-	// go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetInjectiveHash)
+	go RunAsync(&hashes, &hashesMutex, &hashesWG, internal.GetInjectiveHash)
 
 	hashesWG.Wait()
 
