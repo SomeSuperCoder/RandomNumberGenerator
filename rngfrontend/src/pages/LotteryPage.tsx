@@ -12,7 +12,9 @@ import {
   normalize,
   type FinalDataWithResults,
 } from "@/shared/interafaces/interfaces";
-import { EditableNumbersTextarea } from "@/widgets/components/VirtualNumberList";
+import { EditableNumbersTextarea } from "@/widgets/components/List/VirtualNumberList";
+import { Input } from "@/components/ui/input";
+import { Label } from "@radix-ui/react-label";
 
 const LotteryPage = () => {
   const {
@@ -132,7 +134,19 @@ const LotteryPage = () => {
         <div className="grid grid-cols-3 gap-3">
           {(["min", "count", "max"] as const).map((field) => (
             <div key={field} className="flex flex-col">
-              <input
+              <Label
+                htmlFor={
+                  field === "min" ? "min" : field === "max" ? "max" : "count"
+                }
+                className="mb-1 text-[#9aa3ad] text-sm"
+              >
+                {field === "min"
+                  ? "Минимум"
+                  : field === "max"
+                  ? "Максимум"
+                  : "Количество"}
+              </Label>
+              <Input
                 type="number"
                 max={1000}
                 placeholder={
@@ -142,6 +156,7 @@ const LotteryPage = () => {
                     ? "Максимум"
                     : "Количество"
                 }
+                id={field === "min" ? "min" : field === "max" ? "max" : "count"}
                 className="h-9 w-full rounded-lg border border-[#2a313a] bg-[#171c23] px-3 py-0 text-[#e6e7ea] outline-none placeholder:text-[#9aa3ad] [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 {...register(field, {
                   setValueAs: (v) => (v === "" ? undefined : Number(v)),

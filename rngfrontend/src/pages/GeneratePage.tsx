@@ -12,7 +12,10 @@ import {
   normalize,
   type FinalDataWithResults,
 } from "@/shared/interafaces/interfaces";
-import { EditableNumbersTextarea } from "@/widgets/components/VirtualNumberList";
+import { Label } from "@radix-ui/react-label";
+import { Input } from "@/components/ui/input";
+import { EditableNumbersTextarea } from "@/widgets/components/List/VirtualNumberList";
+import Animate from "@/widgets/components/animations/Animate/Animate";
 
 const GeneratePage = () => {
   const {
@@ -30,7 +33,27 @@ const GeneratePage = () => {
     resolver: zodResolver(generateSchema),
     mode: "onSubmit",
   });
+  function toAnimateProps(d: FinalDataWithResults) {
+    // делаем строки для блока hashes
+    const hashesStrings = (d.hashes ?? []).map((h) => {
+      const hex = h.modified_hash ?? h.original_hash ?? "";
+      const trimmed = hex.startsWith("0x") ? hex.slice(2) : hex;
+      const short = trimmed.slice(-8); // просто красиво показать хвост
+      return `${h.source_name}: ${short}`;
+    });
 
+    return {
+      hashes: hashesStrings, // string[]
+      split: d.split ?? [], // string[][]
+      pick: d.pick ?? [], // string[]
+      convert: d.convert ?? [], // number[]
+      sum: Number(d.sum ?? 0),
+      result: Number(d.result ?? 0),
+      // Animate ждёт number. Если x_factor очень большой — Number(...) может потерять точность,
+      // но для отображения времени это обычно ок.
+      xFactor: Number(d.x_factor ?? 0),
+    };
+  }
   const { data, isLoading, error, isSuccess } = useApiQuery<
     FinalDataWithResults,
     TRngParams,
@@ -56,6 +79,11 @@ const GeneratePage = () => {
 
   return (
     <div className="fixed left-1/2 bottom-[max(16px,env(safe-area-inset-bottom))] z-50 w-[min(760px,calc(100vw-24px))] -translate-x-1/2 ">
+      {data ? (
+        <div className="w-full flex justify-center">
+          <Animate {...toAnimateProps(data)} className="text-white" />
+        </div>
+      ) : null}
       <div className="mb-4 text-white">
         {isLoading ? (
           "Загрузка…"
@@ -68,14 +96,13 @@ const GeneratePage = () => {
             <EditableNumbersTextarea
               items={data.results}
               onChange={() => {}}
-              height={320}
+              height={350}
               displaySeparator="newline"
             />
           </>
         ) : null}
       </div>
 
-      {/* Форма */}
       <form
         onSubmit={handleSubmit(submit)}
         className="pointer-events-auto w-full max-w-[720px] rounded-xl border border-[#2a313a] bg-gradient-to-b from-black/18 to-transparent bg-[#11161c] p-2.5 shadow-[0_6px_24px_rgba(0,0,0,0.35)]"
@@ -84,8 +111,21 @@ const GeneratePage = () => {
         <div className="grid grid-cols-3 gap-3">
           {(["min", "count", "max"] as const).map((field) => (
             <div key={field} className="flex flex-col">
-              <input
+              <Label
+                htmlFor={
+                  field === "min" ? "min" : field === "max" ? "max" : "count"
+                }
+                className="mb-1 text-[#9aa3ad] text-sm"
+              >
+                {field === "min"
+                  ? "Минимум"
+                  : field === "max"
+                  ? "Максимум"
+                  : "Количество"}
+              </Label>
+              <Input
                 type="number"
+                max={1000}
                 placeholder={
                   field === "min"
                     ? "Минимум"
@@ -93,6 +133,7 @@ const GeneratePage = () => {
                     ? "Максимум"
                     : "Количество"
                 }
+                id={field === "min" ? "min" : field === "max" ? "max" : "count"}
                 className="h-9 w-full rounded-lg border border-[#2a313a] bg-[#171c23] px-3 py-0 text-[#e6e7ea] outline-none placeholder:text-[#9aa3ad] [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 {...register(field, {
                   setValueAs: (v) => (v === "" ? undefined : Number(v)),
