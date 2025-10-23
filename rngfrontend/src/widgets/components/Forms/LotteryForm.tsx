@@ -1,3 +1,4 @@
+// src/widgets/components/Forms/LotteryForm.tsx
 import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
@@ -5,37 +6,64 @@ import type { TRngParams } from "@/shared/interafaces/interfaces";
 import type { IGenerateSchema } from "@/shared/schemas/generateSchema";
 import { generateSchema } from "@/shared/schemas/generateSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { ILotteryFormProps } from "@/shared/interafaces/interfaces";
+
+interface LotteryFormProps {
+  min: number;
+  max: number;
+  onMinChange: (value: number) => void;
+  onMaxChange: (value: number) => void;
+  queryParams: TRngParams;
+  setQueryParams: (params: TRngParams) => void;
+  refetch: () => Promise<unknown>;
+  isFetching: boolean;
+  isLoading: boolean;
+}
+
 const LotteryForm = ({
+  min,
+  max,
+  onMinChange,
+  onMaxChange,
   queryParams,
   setQueryParams,
   refetch,
   isFetching,
   isLoading,
-}: ILotteryFormProps) => {
+}: LotteryFormProps) => {
   const {
     register,
-    formState: { errors },
     handleSubmit,
+    formState: { errors },
+    watch,
   } = useForm<IGenerateSchema>({
     defaultValues: {
-      min: 0,
-      max: 0,
-      count: 1,
-      checkbox: false,
+      min: min,
+      max: max,
+      count: queryParams.amount,
+      checkbox: queryParams.full_random,
     },
     resolver: zodResolver(generateSchema),
-    mode: "onSubmit",
+    mode: "onChange",
   });
+
+  const watchMin = watch("min");
+  const watchMax = watch("max");
+  const watchCount = watch("count");
+  const watchCheckbox = watch("checkbox");
+
   const submit = async (formData: IGenerateSchema) => {
+    onMinChange(formData.min);
+    onMaxChange(formData.max);
+
     const next: TRngParams = {
-      ...queryParams,
-      amount: Number(formData.count),
-      full_random: Boolean(formData.checkbox),
+      full_random: formData.checkbox,
+      binary: false,
+      amount: formData.count,
     };
     setQueryParams(next);
     await refetch();
   };
+
   return (
     <form
       onSubmit={handleSubmit(submit)}
@@ -44,12 +72,7 @@ const LotteryForm = ({
       <div className="grid grid-cols-3 gap-3">
         {(["min", "count", "max"] as const).map((field) => (
           <div key={field} className="flex flex-col">
-            <Label
-              htmlFor={
-                field === "min" ? "min" : field === "max" ? "max" : "count"
-              }
-              className="mb-1 text-[#9aa3ad] text-sm"
-            >
+            <Label htmlFor={field} className="mb-1 text-[#9aa3ad] text-sm">
               {field === "min"
                 ? "Минимум"
                 : field === "max"
@@ -58,7 +81,7 @@ const LotteryForm = ({
             </Label>
             <Input
               type="number"
-              max={1000}
+              id={field}
               placeholder={
                 field === "min"
                   ? "Минимум"
@@ -66,7 +89,6 @@ const LotteryForm = ({
                   ? "Максимум"
                   : "Количество"
               }
-              id={field === "min" ? "min" : field === "max" ? "max" : "count"}
               className="h-9 w-full rounded-lg border border-[#2a313a] bg-[#171c23] px-3 py-0 text-[#e6e7ea] outline-none placeholder:text-[#9aa3ad] [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               {...register(field, {
                 setValueAs: (v) => (v === "" ? undefined : Number(v)),

@@ -1,13 +1,7 @@
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useMemo, useState } from "react";
+import type { EditableNumbersTextareaProps } from "@/shared/interafaces/interfaces";
 
-type EditableNumbersTextareaProps = {
-  items: number[];
-  onChange: (next: number[]) => void;
-  height?: number;
-  className?: string;
-  displaySeparator?: "newline" | "comma" | "space";
-};
 
 export function EditableNumbersTextarea({
   items,
