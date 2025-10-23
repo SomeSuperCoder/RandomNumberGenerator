@@ -31,14 +31,13 @@ const GeneratePage = () => {
     },
     {
       select: normalize,
-      enabled: false, // ← отключаем авто-загрузку
+      enabled: false,
     }
   );
 
-  // Функция для запуска генерации
   const handleGenerate = (newParams: TRngParams) => {
     setQueryParams(newParams);
-    refetch(); // ← запускаем запрос вручную
+    refetch();
   };
 
   return (
@@ -67,7 +66,6 @@ const GeneratePage = () => {
         ) : null}
       </div>
 
-      {/* Передаём функцию генерации */}
       <GenerateForm onGenerate={handleGenerate} />
     </div>
   );

@@ -81,3 +81,22 @@ export interface CheckerRandomFormProps {
   onAuditSuccess: (data: AuditTest[]) => void;
   onAuditError: () => void;
 }
+export type EditableNumbersTextareaProps = {
+  items: number[];
+  onChange: (next: number[]) => void;
+  height?: number;
+  className?: string;
+  displaySeparator?: "newline" | "comma" | "space";
+};
+
+export interface LotteryFormProps {
+  min: number;
+  max: number;
+  onMinChange: (value: number) => void;
+  onMaxChange: (value: number) => void;
+  queryParams: TRngParams;
+  setQueryParams: (params: TRngParams) => void;
+  refetch: () => Promise<unknown>;
+  isFetching: boolean;
+  isLoading: boolean;
+}
