@@ -2,16 +2,15 @@ import { NavLink } from "react-router-dom";
 import { SunMedium, Home } from "lucide-react";
 
 const tabs = [
-  { to: "/generate", label: "Генератор" },
-  { to: "/checker", label: "Чекер" },
   { to: "/lottery", label: "Розыгрыш" },
+  { to: "/checker", label: "Чекер" },
+  { to: "/generate", label: "Генератор" },
 ];
 
 export default function Header() {
   return (
     <nav className="mx-auto mt-3 max-w-6xl rounded-2xl border border-white/10 bg-[#0f141a]/95 text-white/90 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur supports-[backdrop-filter]:bg-[#0f141a]/80">
       <div className="flex items-center justify-between px-3 py-2">
-        {/* Табы */}
         <div className="inline-flex items-center gap-1 rounded-xl bg-white/4">
           {tabs.map((tab) => (
             <NavLink
@@ -32,7 +31,6 @@ export default function Header() {
           ))}
         </div>
 
-        {/* Иконки */}
         <div className="flex items-center gap-2">
           <button
             type="button"

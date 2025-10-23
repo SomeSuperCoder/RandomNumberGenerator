@@ -31,24 +31,29 @@ export interface IErrorResponse {
   [key: string]: unknown;
 }
 
-export interface IBlockHash {
+export interface BlockHash {
   source_name: string;
   original_hash: string;
   modified_hash: string;
 }
-export interface IVerifycationData {
-  hashes: IBlockHash[];
-  x_factor: string;
-}
-export interface IPipeline {
-  split: string[][];
-  pick: string[];
-  convert: number[];
-  sum: number;
-  result: number;
+
+export interface VerifycationData {
+  hashes: BlockHash[];
+  x_factor: string | number | bigint; // Go отдаёт int64 → может быть числом или строкой
 }
 
-export type IFinalData = IPipeline & IVerifycationData;
+export interface Pipeline {
+  split: string[][];
+  pick: string[];
+  convert: number[]; // uint64 → number (в JS нет uint64)
+  sum: number; // uint64 → number
+  result: number; // float64 → number
+}
+
+export interface IFinalData extends VerifycationData, Pipeline {}
+
+export type RngRaw = (number | Partial<IFinalData>)[];
+export type FinalDataWithResults = IFinalData & { results: number[] };
 
 export type TRngParams = {
   full_random: boolean;
@@ -56,40 +61,23 @@ export type TRngParams = {
   amount: number;
 };
 
-export type RngRaw = Array<number | Partial<IFinalData>>;
+export interface ILotteryFormProps {
+  queryParams: TRngParams;
+  setQueryParams: (params: TRngParams) => void;
+  isFetching: boolean;
+  isLoading: boolean;
+  refetch: () => void;
+}
 
-export type FinalDataWithResults = Omit<IFinalData, "x_factor"> & {
-  x_factor: bigint;
-  results: number[];
+export type AuditTest = {
+  name: string;
+  description: string;
+  result: boolean;
 };
 
-const isMeta = (x: unknown): x is Partial<IFinalData> =>
-  !!x &&
-  typeof x === "object" &&
-  ("convert" in (x as any) || "sum" in (x as any) || "result" in (x as any));
+export type AuditResponse = AuditTest[];
 
-export function normalize(raw: RngRaw): FinalDataWithResults {
-  const numbers = raw.filter((v): v is number => typeof v === "number");
-  const metas = raw.filter(isMeta) as Partial<IFinalData>[];
-
-  const meta0 = metas[0] ?? {};
-
-  const split = meta0.split ?? [];
-  const pick = meta0.pick ?? [];
-  const convert = meta0.convert ?? numbers;
-  const sum = meta0.sum ?? numbers.reduce((a, b) => a + b, 0);
-  const result = meta0.result ?? (convert.length ? sum / convert.length : 0);
-  const hashes = meta0.hashes ?? [];
-
-  const xRaw = (meta0.x_factor as any) ?? 0;
-  const x_factor =
-    typeof xRaw === "bigint"
-      ? xRaw
-      : BigInt(typeof xRaw === "string" ? xRaw : String(xRaw));
-
-  const results = metas
-    .map((m) => m.result)
-    .filter((v): v is number => typeof v === "number");
-
-  return { split, pick, convert, sum, result, hashes, x_factor, results };
+export interface CheckerRandomFormProps {
+  onAuditSuccess: (data: AuditTest[]) => void;
+  onAuditError: () => void;
 }
