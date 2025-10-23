@@ -103,33 +103,33 @@ func getBlock(s string, startIndex int) string {
 
 // BitArray is a structure representing an array of bits.
 type BitArray struct {
-	data []byte // data holds the actual bytes storing the bits.
+	Data []byte // data holds the actual bytes storing the bits.
 }
 
 // NewBitArray initializes and returns a new BitArray of the specified size.
 func NewBitArray(size int) *BitArray {
 	return &BitArray{
-		data: make([]byte, (size+7)>>3), // Allocate the byte array, taking into account the size of a byte (8 bits).
+		Data: make([]byte, (size+7)>>3), // Allocate the byte array, taking into account the size of a byte (8 bits).
 	}
 }
 
 // Set modifies the value of the bit at the specified index to the given value (true or false).
 func (b *BitArray) Set(index int, value bool) {
 	if value {
-		b.data[index>>3] |= 1 << (index & 7) // Set the bit to 1.
+		b.Data[index>>3] |= 1 << (index & 7) // Set the bit to 1.
 	} else {
-		b.data[index>>3] &^= 1 << (index & 7) // Set the bit to 0.
+		b.Data[index>>3] &^= 1 << (index & 7) // Set the bit to 0.
 	}
 }
 
 // Get retrieves the boolean value of the bit at the specified index.
 func (b *BitArray) Get(index int) bool {
-	return (b.data[index>>3] & (1 << (index & 7))) != 0 // Extract the bit value and convert it to a boolean.
+	return (b.Data[index>>3] & (1 << (index & 7))) != 0 // Extract the bit value and convert it to a boolean.
 }
 
 // Size returns the total number of bits in the BitArray.
 func (b *BitArray) Size() int {
-	return len(b.data) << 3 // Calculate the number of bits by multiplying the length of the byte array by 8.
+	return len(b.Data) << 3 // Calculate the number of bits by multiplying the length of the byte array by 8.
 }
 
 func (ba *BitArray) GetBitsString(startIndex, length int) string {

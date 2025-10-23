@@ -1,11 +1,14 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"strconv"
 
+	nistwrapper "github.com/SomeSuperCoder/RandomNumberGenerator/internal/nist_wrapper"
+	"github.com/SomeSuperCoder/RandomNumberGenerator/nist80022"
 	"github.com/SomeSuperCoder/RandomNumberGenerator/utils"
 )
 
@@ -15,7 +18,7 @@ func binaryStringToBytes(binaryStr string) ([]byte, error) {
 
 	bytes := make([]byte, byteCount)
 
-	for i := 0; i < byteCount; i++ {
+	for i := range byteCount {
 		start := i * 8
 		end := start + 8
 
@@ -46,5 +49,16 @@ func Auditor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintln(w, string(bytes))
+	bitArray := nist80022.BitArray{
+		Data: bytes,
+	}
+
+	// ##### DO THE ACTUAL TESTS #####
+	result := nistwrapper.RunTests(&bitArray, nistwrapper.TestList)
+	resultMarshaled, err := json.Marshal(result)
+	if utils.CheckError(w, err, "Failed to Marshal JSON", http.StatusInternalServerError) {
+		return
+	}
+
+	fmt.Fprintln(w, string(resultMarshaled))
 }
