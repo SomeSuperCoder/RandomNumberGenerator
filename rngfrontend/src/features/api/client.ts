@@ -20,14 +20,6 @@ const createApiClient = (): AxiosInstance => {
 
   const instance = axios.create(config);
 
-  // Пример запроса: можно подмешать CSRF
-  // instance.interceptors.request.use((cfg) => {
-  //   const csrf = getCookie('csrftoken');
-  //   if (csrf) cfg.headers = { ...cfg.headers, 'X-CSRFToken': csrf };
-  //   return cfg;
-  // });
-
-  // Единый формат ошибок
   instance.interceptors.response.use(
     (res) => res,
     (error: AxiosError<IErrorResponse>) => {

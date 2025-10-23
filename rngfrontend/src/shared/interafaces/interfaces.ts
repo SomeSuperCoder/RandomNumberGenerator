@@ -58,10 +58,9 @@ export type TRngParams = {
 
 export type RngRaw = Array<number | Partial<IFinalData>>;
 
-/** Итоговый объект для UI: всё как было + массив всех results */
 export type FinalDataWithResults = Omit<IFinalData, "x_factor"> & {
   x_factor: bigint;
-  results: number[]; // << сюда соберём ВСЕ result из сырого ответа
+  results: number[];
 };
 
 const isMeta = (x: unknown): x is Partial<IFinalData> =>
@@ -75,9 +74,8 @@ export function normalize(raw: RngRaw): FinalDataWithResults {
 
   const meta0 = metas[0] ?? {};
 
-  // добавляем недостающие поля IPipeline:
-  const split = meta0.split ?? []; // <— было отсутствовало
-  const pick = meta0.pick ?? []; // <— было отсутствовало
+  const split = meta0.split ?? [];
+  const pick = meta0.pick ?? [];
   const convert = meta0.convert ?? numbers;
   const sum = meta0.sum ?? numbers.reduce((a, b) => a + b, 0);
   const result = meta0.result ?? (convert.length ? sum / convert.length : 0);
@@ -93,6 +91,5 @@ export function normalize(raw: RngRaw): FinalDataWithResults {
     .map((m) => m.result)
     .filter((v): v is number => typeof v === "number");
 
-  // важно вернуть split и pick
   return { split, pick, convert, sum, result, hashes, x_factor, results };
 }
