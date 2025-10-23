@@ -36,5 +36,5 @@
 
 ### Важные ссылки
 - **Файл на 1_000_000 бинарных значений** - https://github.com/SomeSuperCoder/RandomNumberGenerator/blob/main/million.bin.txt
-- **Ссылка на перезентацию** - TODO
+- **Ссылка на перезентацию** - https://docs.google.com/presentation/d/1TlZAafKlowGujrQV38tDvRno0exqJOoc/edit?usp=sharing&ouid=112040639161933370576&rtpof=true&sd=true
 - **Ссылка на видео-демонстрацию работы** - TODO
