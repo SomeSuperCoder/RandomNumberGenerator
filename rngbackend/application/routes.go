@@ -15,7 +15,8 @@ func loadRoutes() http.Handler {
 		fmt.Fprintln(w, "OK")
 	})
 	mux.HandleFunc("GET /rng", handlers.GetRandomNumbers)
-	mux.HandleFunc("GET /audit", handlers.Auditor)
+	mux.HandleFunc("GET /audit/bin", handlers.BinaryAuditor)
+	mux.HandleFunc("GET /audit/int", handlers.IntAuditor)
 
 	return middleware.LoggerMiddleware(middleware.CORSMiddleware(mux))
 }

@@ -33,7 +33,7 @@ func binaryStringToBytes(binaryStr string) ([]byte, error) {
 	return bytes, nil
 }
 
-func Auditor(w http.ResponseWriter, r *http.Request) {
+func BinaryAuditor(w http.ResponseWriter, r *http.Request) {
 	// Read the request body
 	body, err := io.ReadAll(r.Body)
 	if utils.CheckError(w, err, "Failed to read the request body", http.StatusBadRequest) {
